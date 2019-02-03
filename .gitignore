@@ -3,3 +3,7 @@
 ################################################################################
 
 /.vs/CashBack/v15/Server/sqlite3
+/CashBack/bin/Debug/netcoreapp2.0
+/CashBack/obj/Debug/netcoreapp2.0
+/CashBack/obj
+/CashBack/Properties
