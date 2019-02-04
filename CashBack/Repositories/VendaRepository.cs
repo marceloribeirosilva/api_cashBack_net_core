@@ -44,10 +44,8 @@ namespace CashBack.Repositories
                     item.ValorCashBack = decimal.Round(item.Disco.PrecoVenda * valorPercentualCash, 2);
                     item.Disco = _catalogo.ObterDiscoPorID(item.Disco.ID);
 
-                    if (item.Disco != null)
-                    {
-                        _context.ItensVendas.Add(item);
-                    }                    
+                    _context.ItensVendas.Add(item);
+                    _context.Entry(item.Disco).State = EntityState.Unchanged;
                 }
 
                 if (venda.Itens != null && venda.Itens.Any())
@@ -67,7 +65,7 @@ namespace CashBack.Repositories
         public IEnumerable<Venda> ObterTodasVendas(DateTime dataInicial, DateTime dataFinal, int offset, int limit)
         {
             IEnumerable<Venda> vendas = _context.Vendas
-                .Where(x=>x.DataVenda >= dataInicial && x.DataVenda <= dataFinal)
+                .Where(x=>x.DataVenda.Date >= dataInicial.Date && x.DataVenda.Date <= dataFinal.Date)
                 .Skip(offset)
                 .Take(limit)
                 .OrderByDescending(x=>x.DataVenda).ToList();                        
