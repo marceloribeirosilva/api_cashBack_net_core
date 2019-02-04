@@ -12,7 +12,6 @@ namespace CashBack.Models
         public virtual Disco Disco { get; set; }
         public decimal ValorCashBack { get; set; }
 
-        public int DiscoID { get; set; }
         public int VendaID { get; set; }
 
         [JsonIgnore]

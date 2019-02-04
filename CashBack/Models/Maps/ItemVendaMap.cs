@@ -14,8 +14,7 @@ namespace CashBack.Models.Maps
             builder.HasKey(p => p.ID);
             builder.Property(p => p.ID).IsRequired().UseSqlServerIdentityColumn();
             builder.Property(p => p.VendaID).IsRequired();
-            builder.Property(p => p.DiscoID).IsRequired();
-            builder.HasOne(p => p.Venda).WithMany(p => p.Itens).HasForeignKey(p => p.VendaID).HasPrincipalKey(p=>p.VendaID);                                   
+            builder.HasOne(p => p.Venda).WithMany(p => p.Itens).HasForeignKey(p => p.VendaID).HasPrincipalKey(p=>p.VendaID);            
         }
     }
 }

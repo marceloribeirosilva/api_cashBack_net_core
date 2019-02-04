@@ -17,6 +17,11 @@ namespace CashBack.Services
             _vendaRepository = vendaRepository;
         }
 
+        public Resultado IncluirVenda(Venda venda)
+        {
+            return _vendaRepository.IncluirVenda(venda);
+        }
+
         public IEnumerable<Venda> ObterTodasVendas(DateTime dataInicial, DateTime dataFinal, int offset, int limit)
         {
             return _vendaRepository.ObterTodasVendas(dataInicial, dataFinal, offset, limit);
@@ -25,6 +30,6 @@ namespace CashBack.Services
         public Venda ObterVendaPorId(int id)
         {
             return _vendaRepository.ObterVendaPorId(id);
-        }
+        }        
     }
 }

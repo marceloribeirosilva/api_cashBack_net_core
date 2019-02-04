@@ -12,10 +12,56 @@ namespace CashBack.Repositories
     public class VendaRepository : IVendaRepository
     {
         private ApplicationDbContext _context;
+        private ICashBackPercentualRepository _cashBackRepository;
+        private ICatalogoDiscoRepository _catalogo;
 
-        public VendaRepository(ApplicationDbContext contexto)
+        public VendaRepository(ApplicationDbContext contexto, ICashBackPercentualRepository cashBackRepository, ICatalogoDiscoRepository catalogo)
         {
             _context = contexto;
+            _cashBackRepository = cashBackRepository;
+            _catalogo = catalogo;
+        }
+
+        public Resultado IncluirVenda(Venda venda)
+        {
+            Resultado resultado = DadosValidos(venda);
+            resultado.Acao = "Inclusão de Venda";
+
+            if (resultado.Inconsistencias.Count == 0)
+            {
+                venda.DataVenda = DateTime.Now;
+
+                _context.Vendas.Add(venda);
+                
+                
+
+                foreach (var item in venda.Itens)
+                {
+                    item.VendaID = venda.VendaID;
+                    
+                    // Busca valor do CashBack
+                    decimal valorPercentualCash = _cashBackRepository.ObterCashBack(item.Disco.Genero);
+                    item.ValorCashBack = decimal.Round(item.Disco.PrecoVenda * valorPercentualCash, 2);
+                    item.Disco = _catalogo.ObterDiscoPorID(item.Disco.ID);
+
+                    if (item.Disco != null)
+                    {
+                        _context.ItensVendas.Add(item);
+                    }                    
+                }
+
+                if (venda.Itens != null && venda.Itens.Any())
+                {
+                    venda.CashBackTotalVenda = venda.Itens.Sum(x => x.ValorCashBack);
+                    venda.ValorTotalItens = venda.Itens.Sum(x => x.Disco.PrecoVenda);
+                    _context.SaveChanges();
+                }
+
+                
+            }
+
+
+            return resultado;
         }
 
         public IEnumerable<Venda> ObterTodasVendas(DateTime dataInicial, DateTime dataFinal, int offset, int limit)
@@ -31,6 +77,24 @@ namespace CashBack.Repositories
         public Venda ObterVendaPorId(int id)
         {
             return _context.Vendas.Where(x => x.VendaID.Equals(id)).FirstOrDefault();
+        }
+
+        private Resultado DadosValidos(Venda venda)
+        {
+            Resultado resultado = new Resultado();
+            if (venda == null)
+            {
+                resultado.Inconsistencias.Add("Dados de venda inválido");
+            }
+            else
+            {
+                if (venda.Itens == null || !venda.Itens.Any())
+                {
+                    resultado.Inconsistencias.Add("Não é permitido inserir uma venda sem nenhum disco selecionado");
+                }
+            }
+
+            return resultado;
         }
     }
 }

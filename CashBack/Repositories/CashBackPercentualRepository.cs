@@ -27,7 +27,10 @@ namespace CashBack.Repositories
                 if (cash != null)
                 {
                     switch(diaDaSemana)
-                    {                        
+                    {
+                        case 0:
+                            valor = cash.Domingo;
+                            break;
                         case 1:
                             valor = cash.Segunda;
                             break;
@@ -45,10 +48,7 @@ namespace CashBack.Repositories
                             break;
                         case 6:
                             valor = cash.Sabado;
-                            break;
-                        case 7:
-                            valor = cash.Domingo;
-                            break;
+                            break;                        
                     }
                 }
             }

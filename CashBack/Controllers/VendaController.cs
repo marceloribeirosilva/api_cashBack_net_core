@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CashBack.Models;
 using CashBack.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,6 +17,13 @@ namespace CashBack.Controllers
         public VendaController(IVendaService vendaService)
         {
             _vendaService = vendaService;
+        }
+
+        [HttpPost]
+        [Route("api/vendas")]
+        public Resultado Post([FromBody]Venda venda)
+        {
+            return _vendaService.IncluirVenda(venda);
         }
 
         [HttpGet]
@@ -58,5 +66,7 @@ namespace CashBack.Controllers
             }
 
         }
+
+        
     }
 }
